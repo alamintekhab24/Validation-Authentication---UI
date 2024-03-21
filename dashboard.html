@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="text-center">Welcome to the Dashboard</h1>
+        <p class="text-center"><a href="#" class="logout">Log Out</a></p>
+    </div>
+    <script>
+        class Auth {
+            // setup the class and hide the body by default
+            constructor() {
+                document.querySelector("body").style.display = "none";
+                const auth = localStorage.getItem("auth");
+                this.validateAuth(auth);
+            }
+            // check to see if the localStorage item passed to the function is valid and set
+            validateAuth(auth) {
+                if (auth != 1) {
+                    window.location.replace("/main_login.html");
+                } else {
+                    document.querySelector("body").style.display = "block";
+                }
+            }
+            // will remove the localStorage item and redirect to login  screen
+            logOut() {
+                localStorage.removeItem("auth");
+                window.location.replace("/main_login.html");
+            }
+        }
+        const auth = new Auth();
+
+        document.querySelector(".logout").addEventListener("click", (e) => {
+            auth.logOut();
+        });
+    </script>
+</body>
+
+</html>

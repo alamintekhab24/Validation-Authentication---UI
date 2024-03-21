@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Open Sans", sans-serif;
+            /* background-image: url('static/bg-01.jpg'); */
+            display: flex;
+            justify-content: center;
+            /* Horizontally center the container */
+            align-items: center;
+            /* Vertically center the container */
+            min-height: 100vh;
+            /* Ensure the body takes up the full height of the viewport */
+            margin: 0;
+            background-color: aliceblue;
+        }
+
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            padding: 0;
+            margin: 0;
+        }
+
+        .container {
+            
+            width: 800px;
+            /* Adjust the width of the container */
+            height: 350px;
+            /* Adjust the height of the container */
+            top: 150px;
+            /* Adjust the distance from the top of the container to its parent element */
+            bottom: 50px;
+            /* Adjust the distance from the bottom of the container to its parent element */
+            left: 400px;
+            /* Adjust the distance from the left of the container to its parent element */
+            right: 50px;
+            /* Adjust the distance from the right of the container to its parent element */
+            position: absolute;
+            /* Ensure the container is positioned absolutely */
+        }
+
+
+        .text-center {
+            text-align: center;
+        }
+
+        .login .container {
+            max-width: 460px;
+            padding: 2rem;
+            border: 1px solid #ddd;
+            border-radius: 0.25rem;
+            background-color: #fff;
+        }
+
+        .input {
+            appearance: none;
+            display: block;
+            width: 100%;
+            color: #333;
+            border: 1px solid rgb(180, 180, 180);
+            background-color: white;
+            padding: 1rem;
+            border-radius: 0.25rem;
+        }
+
+        .input.input-error {
+            border: 1px solid tomato;
+        }
+
+        .input:focus {
+            outline: none;
+            border: 1px solid royalblue;
+            background-clip: padding-box;
+        }
+
+        .error-message {
+            font-size: 0.85rem;
+            color: tomato;
+        }
+
+        .button {
+            background-color: royalblue;
+            padding: 1rem;
+            border: none;
+            color: #fff;
+            font-weight: bold;
+            display: block;
+            width: 100%;
+            text-align: center;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 20px;
+        }
+
+        .button:hover {
+            filter: brightness(110%);
+        }
+    </style>
+</head>
+
+<body class="login">
+    <div class="container">
+        <h2 class="text-center">Login</h2>
+        <br>
+        <form action="/dashboard.html" class="loginForm">
+            <div class="input-group">
+                <label for="username" class="label">Username</label>
+                <input type="text" id="username" class="input">
+                <span class="error-message"></span>
+            </div>
+            <br>
+            <div class="input-group">
+                <label for="password" class="label">Password</label>
+                <input type="password" id="password" class="input">
+                <span class="error-message"></span>
+            </div>
+            <br>
+            <button class="button" type="submit">Login</button>
+        </form>
+    </div>
+
+    <script>
+        class Login {
+
+            constructor(form, fields) {
+                this.form = form;
+                this.fields = fields;
+                this.validateonSubmit();
+            }
+
+            validateonSubmit() {
+                let self = this; // setup calls to the "this" values of the class described in the constructor
+
+                // add a "submit" event listener to the form
+                this.form.addEventListener("submit", (e) => {
+                    // remove default functionality 
+                    e.preventDefault();
+                    var error = 0;
+                    // loop through the fields and check them against a function for validation
+                    self.fields.forEach((field) => {
+                        const input = document.querySelector(`#${field}`);
+                        if (self.validateFields(input) == false) {
+                            // if a field does not validate, auto-increment our error integer
+                            error++;
+                        }
+                    });
+                    // if everything validates, error will be 0 and can continue
+                    if (error == 0) {
+                        //do login api here or in this case, just submit the form and set a localStorage item
+                        localStorage.setItem("auth", 1);
+                        this.form.submit();
+                    }
+                });
+            }
+
+            validateFields(field) {
+                // remove any whitespace and check to see if the field is blank, if so return false
+                if (field.value.trim() === "") {
+                    // set the status based on the field, the field label, and if it is an error message
+                    this.setStatus(
+                        field,
+                        `${field.previousElementSibling.innerText} cannot be blank`,
+                        "error"
+                    );
+                    return false;
+                } else {
+                    // if the field is not blank, check to see if it is password
+                    if (field.type == "password") {
+                        // if it is a password, check to see if it meets our minimum character requirement
+                        if (field.value.length < 5) {
+                            // set the status based on the field, the field label, and if it is an error message
+                            this.setStatus(
+                                field,
+                                `${field.previousElementSibling.innerText} must be at least 5 characters`,
+                                "error"
+                            );
+                            return false;
+                        } else {
+                            // set the status based on the field without text and return a success message
+                            this.setStatus(field, null, "success");
+                            return true;
+                        }
+                    } else {
+                        // set the status based on the field without text and return a success message
+                        this.setStatus(field, null, "success");
+                        return true;
+                    }
+                }
+            }
+
+            setStatus(field, message, status) {
+                // create variable to hold message
+                const errorMessage = field.parentElement.querySelector(".error-message");
+
+                // if success, remove messages and error classes
+                if (status == "success") {
+                    if (errorMessage) {
+                        errorMessage.innerText = "";
+                    }
+                    field.classList.remove("input-error");
+                }
+                // if error, add messages and add error classes
+                if (status == "error") {
+                    errorMessage.innerText = message;
+                    field.classList.add("input-error");
+                }
+            }
+        }
+
+        // create a variable for the login form
+        const form = document.querySelector(".loginForm");
+        // if the form exists, run the class
+        if (form) {
+            // setup the fields we want to validate, we only have two but you can add others
+            const fields = ["username", "password"];
+            // run the class
+            const validator = new Login(form, fields);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="para">
+        <p>Memory</p>
+    </div>
+    <script>
+        // Protection logic for individual protected pages
+        window.addEventListener('DOMContentLoaded', (event) => {
+            const isAuthenticated = localStorage.getItem("auth") === "1";
+            if (!isAuthenticated) {
+                // If the user is not authenticated, redirect them to the login page
+                window.location.href = "/main_login.html";
+            }
+        });
+    </script>
+</body>
+</html>
