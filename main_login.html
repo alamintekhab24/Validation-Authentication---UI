@@ -65,7 +65,7 @@
             margin: 0;
             transition: all 0.4s;
             position: relative;
-            bottom: 50px;
+            bottom: 60px;
         }
 
         a:focus {
@@ -215,7 +215,7 @@
             position: relative;
             border-bottom: 2px solid #d9d9d9;
             position: relative;
-            bottom: 50px;
+            bottom: 60px;
         }
 
         .label-input100 {
@@ -292,6 +292,11 @@
             color: #a64bf4;
         }
 
+        .error-message {
+            font-size: 0.85rem;
+            color: tomato;
+        }
+
         /*------------------------------------------------------------------
         [ Button ]*/
         .container-login100-form-btn,
@@ -300,7 +305,7 @@
             justify-content: center;
             align-items: center;
             position: relative;
-            bottom: 20px;
+            bottom: 30px;
         }
 
         .wrap-login100-form-btn {
@@ -567,16 +572,16 @@
                         // Check if username and password match 'admin' and 'admin' respectively
                         if (usernameInput.value.trim() !== "admin" || passwordInput.value.trim() !== "admin") {
                             error++;
-                            this.setStatus(usernameInput, "Invalid username or password", "error");
-                            this.setStatus(passwordInput, "Invalid username or password", "error");
+                            this.setStatus(usernameInput, "Invalid username", "error");
+                            this.setStatus(passwordInput, "Invalid password", "error");
+                        } else {
+                            self.fields.forEach((field) => {
+                                const input = document.querySelector(`#${field}`);
+                                if (self.validateFields(input) == false) {
+                                    error++;
+                                }
+                            });
                         }
-
-                        self.fields.forEach((field) => {
-                            const input = document.querySelector(`#${field}`);
-                            if (self.validateFields(input) == false) {
-                                error++;
-                            }
-                        });
 
                         if (error == 0) {
                             localStorage.setItem("auth", 1);
@@ -584,6 +589,7 @@
                         }
                     });
                 }
+
 
                 validateFields(field) {
                     if (field.value.trim() === "") {
